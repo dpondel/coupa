@@ -1,0 +1,237 @@
+{
+	"info": {
+		"_postman_id": "4fbefb94-524d-4388-a56a-da126532ab32",
+		"name": "Bulk Updates",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Query and Update",
+			"item": [
+				{
+					"name": "Get Record",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "c55c05af-2682-404b-b8c5-a906a8947fab",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"console.log(jsonData)\r",
+									"\r",
+									"if (jsonData.length === 0) {\r",
+									"    postman.setNextRequest(null);\r",
+									"} else {\r",
+									"    var recordID = jsonData[0].id;\r",
+									"    pm.environment.set(\"recordID\", recordID);\r",
+									"    postman.setNextRequest(\"Update Record\");\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "9a625618-4c70-43e6-909e-b8f7b1b5b30b",
+								"exec": [
+									"var coupaObject = 'invoices'; \r",
+									"var updateFieldID = 'exported' //field ID you will update in put request\r",
+									"var updateFieldValue = 'true' //value you will assign to field in put requset\r",
+									"\r",
+									"//https://success.coupa.com/Integrate/Technical_Documentation/API/Resources/Reference\r",
+									"    //Accounts API (/accounts)\r",
+									"    //Account Types API (/account_types)\r",
+									"    //Account Validation Rules API (/account_validation_rules)\r",
+									"    //Address API (/addresses)\r",
+									"    //Budget Lines API (/budget lines)\r",
+									"    //Budget Line Adjustment API (.../budget_line_adjustments)\r",
+									"    //Content Groups API (/business_groups)\r",
+									"    //Currencies API (/currencies)\r",
+									"    //Departments API (/departments)\r",
+									"    //Exchange Rates API (/exchange_rates)\r",
+									"    //Items API (/items)\r",
+									"    //Lookup Values API (/lookup_values)\r",
+									"    //Matching Allocations API (/matching_allocations)\r",
+									"    //Payment Terms API (/payment_terms)\r",
+									"    //Projects API (/projects)\r",
+									"    //Remit-To Addresses API (/suppliers/addresses)\r",
+									"    //Shipping Terms API (/shipping_terms)\r",
+									"    //Suppliers API (/suppliers)\r",
+									"    //Supplier Items API (/supplier_items)\r",
+									"    //Supplier Sites API (/supplier sites)\r",
+									"    //Supplier Information API (/supplier_information)\r",
+									"    //Tax Registrations API (/tax_registrations)\r",
+									"    //Users API (/users)\r",
+									"\r",
+									"//https://success.coupa.com/Integrate/Technical_Documentation/API/Resources/Transactional\r",
+									"    //Advance Ship Notices API (/asn)\r",
+									"    //Approvals API (/approvals)\r",
+									"    //Charges API (/charges)\r",
+									"    //Contracts API (/contracts)\r",
+									"    //Coupa Pay Statements API (/coupa_pay/statements)\r",
+									"    //Custom Object API (/custom_objects/id)\r",
+									"    //Data File Sources API (/data_file_sources)\r",
+									"    //Easy Form Responses API (/easy_form_responses)\r",
+									"    //Expenses API (/expense_reports)\r",
+									"    //Integrations API (/integrations)\r",
+									"    //Invoices API (/invoices)\r",
+									"    //Order List API (/order_pads)\r",
+									"    //Payments API (/coupa_pay/payments)\r",
+									"    //Pick Lists/Fulfillment Reservations API (/pick lists)\r",
+									"    //Purchase Orders API (/purchase_orders)\r",
+									"    //Receipts API (/inventory_transactions)\r",
+									"    //Requisitions API (/requisitions)\r",
+									"    //Sourcing API (/quote_requests)\r",
+									"\r",
+									"pm.environment.set(\"coupaObject\", coupaObject);\r",
+									"pm.environment.set(\"updateFieldID\", updateFieldID);\r",
+									"pm.environment.set(\"updateFieldValue\", updateFieldValue);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{x-coupa-api-key}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "x-coupa-api-key",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/{{coupaObject}}?limit=1&exported=false",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"{{coupaObject}}"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "1"
+								},
+								{
+									"key": "exported",
+									"value": "false"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Record",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f7ad1617-fa9d-4437-9530-9f8cae7c5a1d",
+								"exec": [
+									"pm.test(pm.environment.get(\"coupaObject\") + '-' + pm.environment.get(\"recordID\") + ': posted successfully', function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.environment.unset(\"coupaObject\");\r",
+									"pm.environment.unset(\"recordID\");\r",
+									"pm.environment.unset(\"updateFieldID\");\r",
+									"pm.environment.unset(\"updateFieldValue\");\r",
+									"\r",
+									"postman.setNextRequest(\"Get Record\");"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "7d34010d-a7a1-4615-83cf-763adf298691",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{x-coupa-api-key}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "x-coupa-api-key",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": {{recordID}},\r\n    \"{{updateFieldID}}\": {{updateFieldValue}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/{{coupaObject}}/{{recordID}}",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"{{coupaObject}}",
+								"{{recordID}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
